@@ -11,4 +11,4 @@ COPY --from=BUILD_IMAGE /tmp/target/ProjectMangmentSystem*.jar ./ProjectMangment
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/ProjectMangmentSystem.jar"]
 VOLUME /var/lib/pms/config-repo
-EXPOSE 8085
+EXPOSE 8089

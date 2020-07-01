@@ -1,9 +1,13 @@
 package com.pms.jpa.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -11,13 +15,16 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class UserEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
 	private int userId;
 
-	@OneToOne
+	@OneToOne(fetch=FetchType.EAGER ,cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name = "project_id", referencedColumnName = "project_id")
 	private ProjectEntity project;
 
-	@OneToOne
+	@OneToOne(fetch=FetchType.EAGER ,cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name = "task_id", referencedColumnName = "task_id")
 	private TaskEntity task;
 
 	@Column(name = "first_name", nullable = false)

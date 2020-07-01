@@ -46,7 +46,7 @@ public class UserService {
 		return getAllUsers();
 	}
 	
-	public UserEntity updateUser(User user) throws RecordNotFoundException {	
+	public List<User> updateUser(User user) throws RecordNotFoundException {	
 		Optional<UserEntity>  userEntityFrmDB = userRepository.findById(user.getUserId());
 		if(userEntityFrmDB.isPresent()) {
 			UserEntity userEntity = userEntityFrmDB.get();
@@ -55,17 +55,18 @@ public class UserService {
 			userEntity.setLastName(user.getLastName());
 			userRepository.save(userEntity);
 			
-			return userEntity;
+			return getAllUsers();
 		}else {
 			throw new RecordNotFoundException("User does not exist");
 		}	
 	}
 	
-	public void deleteUser(Integer id) throws RecordNotFoundException {
+	public List<User> deleteUser(Integer id) throws RecordNotFoundException {
 		Optional<UserEntity>  userEntityFrmDB = userRepository.findById(id);
 		if(userEntityFrmDB.isPresent()) {
 			UserEntity user = userEntityFrmDB.get();
 			userRepository.delete(user);
+			return getAllUsers();
 		}else {
 			throw new RecordNotFoundException("User does not exist");
 		}

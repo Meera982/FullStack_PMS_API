@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,22 +28,19 @@ public class UserController {
 	}
 	
 	
-	@RequestMapping(path="/deleteUser/{id}", method=RequestMethod.GET, produces="application/json")
-	public @ResponseBody String deleteUser(@PathVariable int id) throws RecordNotFoundException{	
-			userService.deleteUser(id);
-			return "success";		
+	@RequestMapping(path="/deleteUser/{id}", method=RequestMethod.DELETE, produces="application/json")
+	public @ResponseBody List<User> deleteUser(@PathVariable int id) throws RecordNotFoundException{	
+			return userService.deleteUser(id);				
 	}
 	
 	@RequestMapping(path="/createUser", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody User createUser(@RequestParam User user) throws RecordNotFoundException{	
-			userService.createUser(user);
-			return user;		
+	public @ResponseBody List<User> createUser(@RequestBody User user) throws RecordNotFoundException{	
+		return userService.createUser(user);	
 	}
 	
 	@RequestMapping(path="/updateUser", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody User updateUser(@RequestParam User user) throws RecordNotFoundException{	
-			userService.updateUser(user);
-			return user;		
+	public @ResponseBody List<User> updateUser(@RequestBody User user) throws RecordNotFoundException{	
+		return userService.updateUser(user);					
 	}
 
 }

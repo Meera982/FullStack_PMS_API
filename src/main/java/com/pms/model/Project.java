@@ -12,7 +12,16 @@ public class Project {
     private int priority;    
     private User user;
     private List<Task> taskList;
+    private String status;
+    private String managerName;
+    private int taskCount;
     
+	public String getManagerName() {
+		return managerName;
+	}
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
 	public int getProjectId() {
 		return projectId;
 	}
@@ -54,5 +63,17 @@ public class Project {
 	}
 	public void setTaskList(List<Task> taskList) {
 		this.taskList = taskList;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public int getTaskCount() {
+		return taskCount;
+	}
+	public void setTaskCount(int taskCount) {
+		this.taskCount = taskCount;
 	}
 }

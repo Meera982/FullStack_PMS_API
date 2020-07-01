@@ -1,6 +1,7 @@
 package com.pms.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pms.exception.RecordNotFoundException;
+import com.pms.jpa.entity.ParentTaskEntity;
 import com.pms.jpa.entity.ProjectEntity;
 import com.pms.jpa.entity.TaskEntity;
 import com.pms.jpa.entity.UserEntity;
 import com.pms.jpa.repository.ProjectRepository;
+import com.pms.jpa.repository.UserRepository;
+import com.pms.model.ParentTask;
 import com.pms.model.Project;
 import com.pms.model.Task;
 import com.pms.model.User;
@@ -22,10 +26,14 @@ public class ProjectService {
 
 	@Autowired
 	ProjectRepository projectRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 
 	public List<Project> getAllProjects() throws RecordNotFoundException {
 		List<ProjectEntity> projectEntityList = projectRepository.findAll();
 		List<Project> projectList = null;
+		Date todayDate = new Date();
 		if (projectEntityList != null && !projectEntityList.isEmpty()) {
 			projectList = new ArrayList<Project>();
 			for (ProjectEntity projectEntity : projectEntityList) {
@@ -35,26 +43,51 @@ public class ProjectService {
 				projectModel.setProjectName(projectEntity.getProjectName());
 				projectModel.setStartDate(projectEntity.getStartDate());
 				projectModel.setProjectId(projectEntity.getProjectId());
-				User user = new User();
-				user.setFirstName(projectEntity.getUser().getFirstName());
-				user.setLastName(projectEntity.getUser().getLastName());
-				user.setEmpId(projectEntity.getUser().getEmpId());
-				user.setUserId(projectEntity.getUser().getUserId());
-				projectModel.setUser(user);
+				if(projectEntity.getEndDate() != null) {
+					projectModel.setStatus(projectEntity.getEndDate().before(todayDate)?"Yes":"No");
+				}else {
+					projectModel.setStatus("No");
+				}
+				
+				if(projectEntity.getUserInProject() != null) {
+					projectModel.setManagerName(projectEntity.getUserInProject().getFirstName()+" "+projectEntity.getUserInProject().getLastName());
+				}
+				
 				if(projectEntity.getTasks() != null && !projectEntity.getTasks().isEmpty()) {
 					List<Task> taskList = new ArrayList<Task>();
+					int count = 0;
 					Iterator<TaskEntity> it = projectEntity.getTasks().iterator();
 				     while(it.hasNext()){
-				    	TaskEntity taskEntity = it.next();
-				        Task task = new Task();
-				        task.setEndDate(taskEntity.getEndDate());
-				        task.setPriority(taskEntity.getPriority());
-				        task.setStartDate(taskEntity.getStartDate());
-				        task.setTaskId(taskEntity.getTaskId());
-				        task.setTaskName(taskEntity.getTaskName());
-				        task.setTaskStatus(taskEntity.getTaskStatus());
-				        taskList.add(task);
+				    	 Task taskModel = new Task();
+				    	 TaskEntity taskEntity = it.next();
+							taskModel.setEndDate(taskEntity.getEndDate());
+							if(taskEntity.getParentTask() != null) {
+								ParentTaskEntity parentTaskEntity = taskEntity.getParentTask();
+								ParentTask parentTask = new ParentTask();
+								parentTask.setParentTaskId(parentTaskEntity.getParentId());
+								parentTask.setParentTaskName(parentTaskEntity.getParentTask());
+								taskModel.setParentTask(parentTask);
+							}
+							taskModel.setPriority(taskEntity.getPriority());
+							taskModel.setStartDate(taskEntity.getStartDate());
+							taskModel.setTaskId(taskEntity.getTaskId());
+							taskModel.setTaskName(taskEntity.getTaskName());
+							taskModel.setTaskStatus(taskEntity.getTaskStatus());
+							if(taskEntity.getUserInTask() != null) {
+								User user = new User();
+								user.setEmpId(taskEntity.getUserInTask().getEmpId());
+								user.setFirstName(taskEntity.getUserInTask().getFirstName());
+								user.setLastName(taskEntity.getUserInTask().getLastName());
+								user.setUserId(taskEntity.getUserInTask().getUserId());
+								taskModel.setUser(user);
+							}
+							
+							taskList.add(taskModel);				       			        
+				        count++;
 				     }
+				     projectModel.setTaskList(taskList);	
+				     projectModel.setTaskCount(count);
+				     
 				}
 				projectList.add(projectModel);
 			}
@@ -70,16 +103,18 @@ public class ProjectService {
 		projectEntity.setPriority(project.getPriority());
 		projectEntity.setProjectName(project.getProjectName());
 		projectEntity.setStartDate(project.getStartDate());
-		UserEntity userEntity = new UserEntity();
-		userEntity.setEmpId(project.getUser().getEmpId());
-		userEntity.setFirstName(project.getUser().getFirstName());
-		userEntity.setLastName(project.getUser().getLastName());
-		projectEntity.setUser(userEntity);
+		if(project.getUser() != null) {
+			Optional<UserEntity> user = userRepository.findById(project.getUser().getUserId());
+			UserEntity userEntity = user.get();
+			userEntity.setProject(projectEntity);
+			//userRepository.save(userEntity);
+			projectEntity.setUserInProject(userEntity);
+		}
 		projectRepository.save(projectEntity);
 		return getAllProjects();
 	}
 
-	public ProjectEntity updateProject(Project project) throws RecordNotFoundException {
+	public List<Project> updateProject(Project project) throws RecordNotFoundException {
 		Optional<ProjectEntity> projectEntityFrmDB = projectRepository.findById(project.getProjectId());
 		if (projectEntityFrmDB.isPresent()) {
 			ProjectEntity projectEntity = projectEntityFrmDB.get();
@@ -87,24 +122,34 @@ public class ProjectService {
 			projectEntity.setPriority(project.getPriority());
 			projectEntity.setProjectName(project.getProjectName());
 			projectEntity.setStartDate(project.getStartDate());
-			UserEntity userEntity = new UserEntity();
-			userEntity.setEmpId(project.getUser().getEmpId());
-			userEntity.setFirstName(project.getUser().getFirstName());
-			userEntity.setLastName(project.getUser().getLastName());
-			projectEntity.setUser(userEntity);
+			
+			if(project.getUser() != null) {
+				UserEntity user = userRepository.getOne(projectEntity.getUserInProject().getUserId());
+				user.setProject(null);
+				
+				UserEntity newUser = userRepository.getOne(project.getUser().getUserId());
+				newUser.setProject(projectEntity);
+				projectEntity.setUserInProject(newUser);				
+			}
+			
 			projectRepository.save(projectEntity);
 
-			return projectEntity;
+			return getAllProjects();
 		} else {
 			throw new RecordNotFoundException("Project does not exist");
 		}
 	}
 
-	public void deleteProject(Integer id) throws RecordNotFoundException {
+	public List<Project> deleteProject(Integer id) throws RecordNotFoundException {
 		Optional<ProjectEntity> projectEntityFrmDB = projectRepository.findById(id);
+		Optional<UserEntity> userEntityFrmDB = userRepository.findById(projectEntityFrmDB.get().getUserInProject().getUserId());
 		if (projectEntityFrmDB.isPresent()) {
+			UserEntity user = userEntityFrmDB.get();
+			user.setProject(null);
+			userRepository.save(user);
 			ProjectEntity project = projectEntityFrmDB.get();
 			projectRepository.delete(project);
+			return getAllProjects();
 		} else {
 			throw new RecordNotFoundException("Project does not exist");
 		}

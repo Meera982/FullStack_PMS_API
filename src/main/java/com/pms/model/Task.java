@@ -6,9 +6,8 @@ public class Task {
 	
 	private int taskId;
 	private Project project;
-	private Task parentTask;
-	private boolean isParentTask;
-	private String taskName;	
+	private ParentTask parentTask;
+    private String taskName;	
 	private Date startDate;	
 	private Date endDate;	
 	private int priority;	
@@ -27,17 +26,11 @@ public class Task {
 	public void setProject(Project project) {
 		this.project = project;
 	}
-	public Task getParentTask() {
+	public ParentTask getParentTask() {
 		return parentTask;
 	}
-	public void setParentTask(Task parentTask) {
+	public void setParentTask(ParentTask parentTask) {
 		this.parentTask = parentTask;
-	}
-	public boolean isParentTask() {
-		return isParentTask;
-	}
-	public void setParentTask(boolean isParentTask) {
-		this.isParentTask = isParentTask;
 	}
 	public String getTaskName() {
 		return taskName;

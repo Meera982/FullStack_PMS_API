@@ -1,10 +1,13 @@
 package com.pms.jpa.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -14,15 +17,24 @@ import javax.persistence.Table;
 public class ParentTaskEntity {
 	
 	@Id
-    @GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="parent_id")
     private int parentId;
      
-    @Column(name="parent_task", nullable=false)
-    private String parentTask; 
+    @Column(name="parent_task_name", nullable=false)
+    private String parentTaskName; 
     
-    @OneToMany(mappedBy="parentTask")
-    private Set<TaskEntity> tasks;
+    @OneToMany(mappedBy="parentTask", cascade = CascadeType.ALL)
+    private Set<TaskEntity> tasks = new HashSet<TaskEntity>();
     
+
+	public Set<TaskEntity> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Set<TaskEntity> tasks) {
+		this.tasks = tasks;
+	}
 
 	public int getParentId() {
 		return parentId;
@@ -33,16 +45,16 @@ public class ParentTaskEntity {
 	}
 
 	public String getParentTask() {
-		return parentTask;
+		return parentTaskName;
 	}
 
 	public void setParentTask(String parentTask) {
-		this.parentTask = parentTask;
+		this.parentTaskName = parentTask;
 	}
 	
 	@Override
     public String toString() {
-        return "ParentTaskEntity [parentId=" + parentId + ", parentTask=" + parentTask +"]";
+        return "ParentTaskEntity [parentId=" + parentId + ", parentTask=" + parentTaskName +"]";
     }
 
 }

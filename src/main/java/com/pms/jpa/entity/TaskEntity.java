@@ -2,9 +2,12 @@ package com.pms.jpa.entity;
 
 import java.sql.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,18 +18,19 @@ import javax.persistence.Table;
 @Table(name = "task")
 public class TaskEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="task_id")
 	private int taskId;
 
-	@ManyToOne
-	@JoinColumn(name = "projectId")
+	@ManyToOne(fetch=FetchType.EAGER ,cascade = CascadeType.ALL)
+	@JoinColumn(name = "project_id", referencedColumnName = "project_id")
 	private ProjectEntity project;
 
-	@ManyToOne
-	@JoinColumn(name = "parentId")
+	@ManyToOne(fetch=FetchType.EAGER ,cascade = CascadeType.ALL)
+	@JoinColumn(name = "parent_id", referencedColumnName = "parent_id")
 	private ParentTaskEntity parentTask;
 
-	@Column(name = "task", nullable = false)
+	@Column(name = "task_name", nullable = false)
 	private String taskName;
 
 	@Column(name = "startDate")
@@ -41,9 +45,10 @@ public class TaskEntity {
 	@Column(name = "task_status", nullable = false)
 	private String taskStatus;
 	
-	@OneToOne
-    private UserEntity user;
-
+	@OneToOne(mappedBy="task")
+    private UserEntity userInTask;
+	
+	
 	public int getTaskId() {
 		return taskId;
 	}
@@ -108,12 +113,12 @@ public class TaskEntity {
 		this.taskStatus = taskStatus;
 	}
 
-	public UserEntity getUser() {
-		return user;
+	public UserEntity getUserInTask() {
+		return userInTask;
 	}
 
-	public void setUser(UserEntity user) {
-		this.user = user;
+	public void setUserInTask(UserEntity userInTask) {
+		this.userInTask = userInTask;
 	}
 
 	@Override

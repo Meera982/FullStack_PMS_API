@@ -3,12 +3,15 @@ package com.pms.jpa.entity;
 import java.sql.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -16,10 +19,11 @@ import javax.persistence.Table;
 public class ProjectEntity {
 	
 	@Id
-    @GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="project_id")
     private int projectId;
      
-    @Column(name="project", nullable=false)
+    @Column(name="project_name", nullable=false)
     private String projectName;
     
     @Column(name="startDate")
@@ -31,12 +35,13 @@ public class ProjectEntity {
     @Column(name="priority")
     private int priority;
     
-    @OneToMany(mappedBy="task")
+    @OneToMany(mappedBy="project", cascade = CascadeType.ALL)
     private Set<TaskEntity> tasks;
     
-    @OneToOne
-    private UserEntity user;
+    @OneToOne(mappedBy="project")
+	private UserEntity userInProject;
     
+        
     public int getProjectId() {
 		return projectId;
 	}
@@ -85,12 +90,13 @@ public class ProjectEntity {
 		this.tasks = tasks;
 	}
 
-	public UserEntity getUser() {
-		return user;
+	
+	public UserEntity getUserInProject() {
+		return userInProject;
 	}
 
-	public void setUser(UserEntity user) {
-		this.user = user;
+	public void setUserInProject(UserEntity userInProject) {
+		this.userInProject = userInProject;
 	}
 
 	@Override

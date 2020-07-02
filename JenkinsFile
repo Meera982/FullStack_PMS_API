@@ -1,5 +1,8 @@
 #!/usr/bin/env groovy
 node {
+	environment {
+    PATH = "C:\\Program Files\\Git\\usr\\bin;C:\\Program Files\\Git\\bin;${env.PATH}"
+	}
 
    stage('Clone Repository') {
         // Get some code from a GitHub repository

@@ -1,6 +1,4 @@
-FROM maven:3.5-jdk-8
-RUN mkdir -p /deploy/application
-VOLUME ["/deploy/application"]
-WORKDIR /deploy/application
-ADD . .
-ENTRYPOINT ["mvn","clean","package"]
+FROM adoptopenjdk/openjdk11:jdk-11.0.2.9
+VOLUME /tmp
+ADD target/ProjectMangmentSystem*.jar app.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar /app.jar

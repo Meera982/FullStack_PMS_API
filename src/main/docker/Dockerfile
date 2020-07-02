@@ -1,5 +1,4 @@
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM adoptopenjdk/openjdk11:jdk-11.0.2.9
 VOLUME /tmp
-VOLUME /log
-ADD ProjectMangmentSystem*.jar app.jar
-ENTRYPOINT [ "sh", "-c", "java -jar /app.jar" ]
+ADD target/ProjectMangmentSystem*.jar app.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar /app.jar

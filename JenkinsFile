@@ -2,7 +2,7 @@
 pipeline {
     agent {
         docker {
-            image 'frolvlad/alpine-oraclejdk8:slim'   
+            image 'frolvlad/alpine-java:jdk8-slim'   
             args '--network ci'        
         }
     }

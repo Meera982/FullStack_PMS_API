@@ -1,4 +1,3 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.2.9
-WORKDIR /App
+FROM frolvlad/alpine-oraclejdk8:slim
 ADD target/ProjectMangmentSystem*.jar app.jar
 ENTRYPOINT exec java $JAVA_OPTS -jar /app.jar

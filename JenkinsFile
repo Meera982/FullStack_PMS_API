@@ -10,7 +10,7 @@ pipeline {
     environment {
     ORG_NAME = "PMS"
         APP_NAME = "pms-demos-java-pipeline"
-        APP_CONTEXT_ROOT = "/"
+        APP_CONTEXT_ROOT = "//c//Program Files (x86)//Jenkins//jobs//PMS_API//workspace//"
         APP_LISTENING_PORT = "8081"
     TEST_CONTAINER_NAME = "ci-${APP_NAME}-${BUILD_NUMBER}"
     registry = "meerafse/pms"

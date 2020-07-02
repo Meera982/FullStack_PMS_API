@@ -20,7 +20,7 @@ node {
    
    stage('Deploy Spring Boot Application') {
         
-        bat "docker run --name java-deploy-container --volumes-from maven-build-container -d -p 8090:8080 ProjectManagementSystem:0.0.1-SNAPSHOT"
+        bat "docker run --name java-deploy-container --volumes-from maven-build-container -d -p 8090:8080 meerafse/pms"
    }
 
 }

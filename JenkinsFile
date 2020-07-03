@@ -35,13 +35,7 @@ pipeline {
             echo "-=- build Docker image -=-"
             sh "mvn docker:build"
         }
-    }  
-    stage('Run Docker image') {
-        steps {
-            echo "-=- run Docker image -=-"
-            sh "docker run --name ${TEST_CONTAINER_NAME}  pmsapiimage:latest"
-        }
-    }
+    }    
     stage('Push Docker image') {
         steps {
             echo "-=- push Docker image -=-"

@@ -75,7 +75,7 @@
           <artifactId>docker-maven-plugin</artifactId>
           <version>1.2.0</version>
           <configuration>
-              <imageName>pmsapiimage</imageName>
+              <imageName>projectapiimage</imageName>
               <dockerDirectory>/Dockerfile</dockerDirectory>
               <imageTags>
                     <imageTag>${project.version}</imageTag>

@@ -39,7 +39,7 @@ pipeline {
     stage('Run Docker image') {
         steps {
             echo "-=- run Docker image -=-"
-            sh "docker run --name ${TEST_CONTAINER_NAME}  ${ORG_NAME}/${APP_NAME}:latest"
+            sh "docker run --name ${TEST_CONTAINER_NAME}  pmsapiimage:latest"
         }
     }
     stage('Push Docker image') {

@@ -76,7 +76,7 @@
           <version>1.2.0</version>
           <configuration>
               <imageName>pmsapiimage</imageName>
-              <dockerDirectory>${project.basedir}</dockerDirectory>
+              <dockerDirectory>/Dockerfile</dockerDirectory>
               <imageTags>
                     <imageTag>${project.version}</imageTag>
                     <imageTag>latest</imageTag>

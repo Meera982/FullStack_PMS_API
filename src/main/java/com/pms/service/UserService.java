@@ -23,7 +23,7 @@ public class UserService {
 		List<User> userList = null;
 		if (userEntityList != null && !userEntityList.isEmpty()) {
 			userList = new ArrayList<User>();
-			for(UserEntity userEntity : userEntityList) {
+			for (UserEntity userEntity : userEntityList) {
 				User userModel = new User();
 				userModel.setEmpId(userEntity.getEmpId());
 				userModel.setUserId(userEntity.getUserId());
@@ -34,10 +34,10 @@ public class UserService {
 			return userList;
 		} else {
 			throw new RecordNotFoundException("User list is empty");
-		}		
+		}
 	}
-	
-	public List<User> createUser(User user) throws RecordNotFoundException {	
+
+	public List<User> createUser(User user) throws RecordNotFoundException {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setEmpId(user.getEmpId());
 		userEntity.setFirstName(user.getFirstName());
@@ -45,34 +45,26 @@ public class UserService {
 		userRepository.save(userEntity);
 		return getAllUsers();
 	}
-	
-	public List<User> updateUser(User user) throws RecordNotFoundException {	
-		Optional<UserEntity>  userEntityFrmDB = userRepository.findById(user.getUserId());
-		if(userEntityFrmDB.isPresent()) {
-			UserEntity userEntity = userEntityFrmDB.get();
-			userEntity.setEmpId(user.getEmpId());
-			userEntity.setFirstName(user.getFirstName());
-			userEntity.setLastName(user.getLastName());
-			userRepository.save(userEntity);
-			
-			return getAllUsers();
-		}else {
-			throw new RecordNotFoundException("User does not exist");
-		}	
+
+	public List<User> updateUser(User user) throws RecordNotFoundException {
+		Optional<UserEntity> userEntityFrmDB = userRepository.findById(user.getUserId());
+		UserEntity userEntity = userEntityFrmDB.get();
+		userEntity.setEmpId(user.getEmpId());
+		userEntity.setFirstName(user.getFirstName());
+		userEntity.setLastName(user.getLastName());
+		userRepository.save(userEntity);
+
+		return getAllUsers();
+
 	}
-	
+
 	public List<User> deleteUser(Integer id) throws RecordNotFoundException {
-		Optional<UserEntity>  userEntityFrmDB = userRepository.findById(id);
-		if(userEntityFrmDB.isPresent()) {
-			UserEntity user = userEntityFrmDB.get();
-			userRepository.delete(user);
-			return getAllUsers();
-		}else {
-			throw new RecordNotFoundException("User does not exist");
-		}
+		Optional<UserEntity> userEntityFrmDB = userRepository.findById(id);
+
+		UserEntity user = userEntityFrmDB.get();
+		userRepository.delete(user);
+		return getAllUsers();
+
 	}
-		
-		
-	
 
 }

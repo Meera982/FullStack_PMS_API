@@ -32,43 +32,9 @@ public class TaskService {
 	@Autowired
 	ParentTaskRepository parentTaskRepository;
 	
-	/*public List<Task> getAllTasks() throws RecordNotFoundException{
-		List<TaskEntity> taskEntityList = taskRepository.findById(id)
-		List<Task> taskList = null;
-		if(taskEntityList != null && !taskEntityList.isEmpty()) {
-			taskList = new ArrayList<Task>();
-			for(TaskEntity taskEntity:  taskEntityList) {
-				Task taskModel = new Task();
-				taskModel.setEndDate(taskEntity.getEndDate());
-				taskModel.setParentTask(false);
-				if(taskEntity.getParentTask() != null) {
-					ParentTaskEntity parentTaskEntity = taskEntity.getParentTask();
-					Task parentTask = new Task();
-					parentTask.setTaskId(parentTaskEntity.getParentId());
-					parentTask.setTaskName(parentTaskEntity.getParentTask());
-					taskModel.setParentTask(parentTask);
-				}
-				taskModel.setPriority(taskEntity.getPriority());
-				taskModel.setStartDate(taskEntity.getStartDate());
-				taskModel.setTaskId(taskEntity.getTaskId());
-				taskModel.setTaskName(taskEntity.getTaskName());
-				taskModel.setTaskStatus(taskEntity.getTaskStatus());
-				if(taskEntity.getUserInTask() != null) {
-					User user = new User();
-					user.setEmpId(taskEntity.getUserInTask().getEmpId());
-					user.setFirstName(taskEntity.getUserInTask().getFirstName());
-					user.setLastName(taskEntity.getUserInTask().getLastName());
-					user.setUserId(taskEntity.getUserInTask().getUserId());
-					taskModel.setUser(user);
-				}
-				
-				taskList.add(taskModel);
-			}
-		}
-		return taskList;
-	}*/
 	
-	public void createTask(Task task) {
+	
+	public boolean createTask(Task task) {
 		if(task.getEndDate() != null && task.getStartDate() != null) {
 			TaskEntity taskEntity = new TaskEntity();
 			taskEntity.setEndDate(task.getEndDate());			
@@ -98,10 +64,10 @@ public class TaskService {
 			parentTaskEntity.setParentTask(task.getTaskName());
 			parentTaskRepository.save(parentTaskEntity);
 		}
-		
+		return true;		
 	}
 	
-	public void updateTask(Task task) {
+	public boolean updateTask(Task task) {
 		if(task.getEndDate() != null && task.getStartDate() != null) {
 			TaskEntity taskEntity = taskRepository.getOne(task.getTaskId());
 			taskEntity.setEndDate(task.getEndDate());			
@@ -140,14 +106,16 @@ public class TaskService {
 			parentTaskEntity.setParentTask(task.getTaskName());
 			parentTaskRepository.save(parentTaskEntity);
 		}
+		return true;
 		
 	}
 	
 	
-	public void endTask(int id) {
+	public boolean endTask(int id) {
 		TaskEntity taskEntity = taskRepository.getOne(id);
 		taskEntity.setTaskStatus("Completed");
 		taskRepository.save(taskEntity);
+		return true;
 	}
 	
 	public List<ParentTask> getAllParentTasks() {

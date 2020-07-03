@@ -76,7 +76,7 @@
           <version>1.2.0</version>
           <configuration>
               <imageName>projectapiimage</imageName>
-              <dockerDirectory>/Dockerfile</dockerDirectory>
+              <dockerDirectory>${project.basedir}</dockerDirectory>
               <imageTags>
                     <imageTag>${project.version}</imageTag>
                     <imageTag>latest</imageTag>
